@@ -463,9 +463,16 @@ def main():
                 [args.width] * string_count,
                 [args.alignment] * string_count,
                 [args.text_color] * string_count,
-                [rnd.randrange(2) for _ in range(string_count)] if args.orientation == 2 else [args.orientation] * string_count,
+                (
+                    [rnd.randrange(2) for _ in range(string_count)]
+                    if args.orientation == 2
+                    else [args.orientation] * string_count
+                ),
                 [args.space_width] * string_count,
-                [rnd.randrange(character_spacing[0], character_spacing[1]+1) for _ in range(string_count)],
+                [
+                    rnd.randrange(character_spacing[0], character_spacing[1] + 1)
+                    for _ in range(string_count)
+                ],
                 [args.margins] * string_count,
                 [args.fit] * string_count,
                 [args.output_mask] * string_count,
