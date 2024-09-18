@@ -265,7 +265,7 @@ def parse_arguments():
         type=int,
         help="Define the width of the spaces between characters. 2 means two pixels. If two values are set, the first will indicate minimum spacing, the second maximum spacing, and the generator will choose a random value in between",
         nargs="+",
-        default=0,
+        default=[0, 0],
     )
     parser.add_argument(
         "-m",
