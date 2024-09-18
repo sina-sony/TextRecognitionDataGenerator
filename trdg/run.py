@@ -240,7 +240,7 @@ def parse_arguments():
         "--orientation",
         type=int,
         nargs="?",
-        help="Define the orientation of the text. 0: Horizontal, 1: Vertical",
+        help="Define the orientation of the text. 0: Horizontal, 1: Vertical, 2: Random",
         default=0,
     )
     parser.add_argument(
@@ -263,8 +263,8 @@ def parse_arguments():
         "-cs",
         "--character_spacing",
         type=int,
-        nargs="?",
-        help="Define the width of the spaces between characters. 2 means two pixels",
+        help="Define the width of the spaces between characters. 2 means two pixels. If two values are set, the first will indicate minimum spacing, the second maximum spacing, and the generator will choose a random value in between",
+        nargs="+",
         default=0,
     )
     parser.add_argument(
@@ -351,6 +351,12 @@ def main():
 
     # Argument parsing
     args = parse_arguments()
+
+    character_spacing = args.character_spacing
+    if len(character_spacing) == 1:
+        character_spacing = character_spacing * 2
+    elif len(character_spacing) > 2:
+        sys.exit("Character spacing must be a single value or two values")
 
     # Create the directory if it does not exist.
     try:
@@ -457,9 +463,9 @@ def main():
                 [args.width] * string_count,
                 [args.alignment] * string_count,
                 [args.text_color] * string_count,
-                [args.orientation] * string_count,
+                [rnd.randrange(2) for _ in range(string_count)] if args.orientation == 2 else [args.orientation] * string_count,
                 [args.space_width] * string_count,
-                [args.character_spacing] * string_count,
+                [rnd.randrange(character_spacing[0], character_spacing[1]+1) for _ in range(string_count)],
                 [args.margins] * string_count,
                 [args.fit] * string_count,
                 [args.output_mask] * string_count,
