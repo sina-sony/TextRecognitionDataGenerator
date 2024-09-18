@@ -208,7 +208,7 @@ def parse_arguments():
         "--distorsion",
         type=int,
         nargs="?",
-        help="Define a distortion applied to the resulting image. 0: None (Default), 1: Sine wave, 2: Cosine wave, 3: Random",
+        help="Define a distortion applied to the resulting image. 0: None (Default), 1: Sine wave, 2: Cosine wave, 3: Noise, 4: Random",
         default=0,
     )
     parser.add_argument(
@@ -456,7 +456,11 @@ def main():
                 [args.blur] * string_count,
                 [args.random_blur] * string_count,
                 [args.background] * string_count,
-                [args.distorsion] * string_count,
+                (
+                    [rnd.randrange(4) for _ in range(string_count)]
+                    if args.distorsion == 4
+                    else [args.distorsion] * string_count
+                ),
                 [args.distorsion_orientation] * string_count,
                 [args.handwritten] * string_count,
                 [args.name_format] * string_count,
