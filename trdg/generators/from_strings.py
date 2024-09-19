@@ -24,8 +24,8 @@ class GeneratorFromStrings:
         blur: int = 0,
         random_blur: bool = False,
         background_type: int = 0,
-        distorsion_type: int = 0,
-        distorsion_orientation: int = 0,
+        distortion_type: int = 0,
+        distortion_orientation: int = 0,
         is_handwritten: bool = False,
         width: int = -1,
         alignment: int = 1,
@@ -70,8 +70,8 @@ class GeneratorFromStrings:
         self.blur = blur
         self.random_blur = random_blur
         self.background_type = background_type
-        self.distorsion_type = distorsion_type
-        self.distorsion_orientation = distorsion_orientation
+        self.distortion_type = distortion_type
+        self.distortion_orientation = distortion_orientation
         self.is_handwritten = is_handwritten
         self.width = width
         self.alignment = alignment
@@ -113,8 +113,8 @@ class GeneratorFromStrings:
                 self.blur,
                 self.random_blur,
                 self.background_type,
-                self.distorsion_type,
-                self.distorsion_orientation,
+                self.distortion_type,
+                self.distortion_orientation,
                 self.is_handwritten,
                 0,
                 self.width,
