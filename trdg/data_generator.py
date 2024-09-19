@@ -3,7 +3,7 @@ import random as rnd
 
 from PIL import Image, ImageFilter, ImageStat
 
-from trdg import computer_text_generator, background_generator, distorsion_generator
+from trdg import computer_text_generator, background_generator, distortion_generator
 from trdg.utils import mask_to_bboxes, make_filename_valid
 
 try:
@@ -35,8 +35,8 @@ class FakeTextDataGenerator(object):
         blur: int,
         random_blur: bool,
         background_type: int,
-        distorsion_type: int,
-        distorsion_orientation: int,
+        distortion_type: int,
+        distortion_orientation: int,
         is_handwritten: bool,
         name_format: int,
         width: int,
@@ -95,29 +95,29 @@ class FakeTextDataGenerator(object):
         #############################
         # Apply distortion to image #
         #############################
-        if distorsion_type == 0:
+        if distortion_type == 0:
             distorted_img = rotated_img  # Mind = blown
             distorted_mask = rotated_mask
-        elif distorsion_type == 1:
-            distorted_img, distorted_mask = distorsion_generator.sin(
+        elif distortion_type == 1:
+            distorted_img, distorted_mask = distortion_generator.sin(
                 rotated_img,
                 rotated_mask,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
+                vertical=(distortion_orientation == 0 or distortion_orientation == 2),
+                horizontal=(distortion_orientation == 1 or distortion_orientation == 2),
             )
-        elif distorsion_type == 2:
-            distorted_img, distorted_mask = distorsion_generator.cos(
+        elif distortion_type == 2:
+            distorted_img, distorted_mask = distortion_generator.cos(
                 rotated_img,
                 rotated_mask,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
+                vertical=(distortion_orientation == 0 or distortion_orientation == 2),
+                horizontal=(distortion_orientation == 1 or distortion_orientation == 2),
             )
         else:
-            distorted_img, distorted_mask = distorsion_generator.random(
+            distorted_img, distorted_mask = distortion_generator.random(
                 rotated_img,
                 rotated_mask,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
+                vertical=(distortion_orientation == 0 or distortion_orientation == 2),
+                horizontal=(distortion_orientation == 1 or distortion_orientation == 2),
             )
 
         ##################################

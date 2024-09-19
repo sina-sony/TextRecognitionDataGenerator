@@ -283,7 +283,7 @@ class DataGenerator(unittest.TestCase):
 
         os.remove("tests/out/TEST TEST TEST_3.jpg")
 
-    def test_generate_data_with_sine_distorsion(self):
+    def test_generate_data_with_sine_distortion(self):
         FakeTextDataGenerator.generate(
             4,
             "TEST TEST TEST",
@@ -324,7 +324,7 @@ class DataGenerator(unittest.TestCase):
 
         os.remove("tests/out/TEST TEST TEST_4.jpg")
 
-    def test_generate_data_with_cosine_distorsion(self):
+    def test_generate_data_with_cosine_distortion(self):
         FakeTextDataGenerator.generate(
             5,
             "TEST TEST TEST",

@@ -205,7 +205,7 @@ def parse_arguments():
     )
     parser.add_argument(
         "-d",
-        "--distorsion",
+        "--distortion",
         type=int,
         nargs="?",
         help="Define a distortion applied to the resulting image. 0: None (Default), 1: Sine wave, 2: Cosine wave, 3: Noise, 4: Random",
@@ -213,7 +213,7 @@ def parse_arguments():
     )
     parser.add_argument(
         "-do",
-        "--distorsion_orientation",
+        "--distortion_orientation",
         type=int,
         nargs="?",
         help="Define the distortion's orientation. Only used if -d is specified. 0: Vertical (Up and down), 1: Horizontal (Left and Right), 2: Both",
@@ -467,10 +467,10 @@ def main():
                 [args.background] * string_count,
                 (
                     [rnd.randrange(4) for _ in range(string_count)]
-                    if args.distorsion == 4
-                    else [args.distorsion] * string_count
+                    if args.distortion == 4
+                    else [args.distortion] * string_count
                 ),
-                [args.distorsion_orientation] * string_count,
+                [args.distortion_orientation] * string_count,
                 [args.handwritten] * string_count,
                 [args.name_format] * string_count,
                 [args.width] * string_count,

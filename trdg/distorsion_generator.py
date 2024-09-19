@@ -8,7 +8,7 @@ from typing import Tuple
 from PIL import Image
 
 
-def _apply_func_distorsion(
+def _apply_func_distortion(
     image: Image, mask: Image, vertical: bool, horizontal: bool, max_offset: int, func
 ) -> Tuple:
     """
@@ -109,7 +109,7 @@ def sin(
 
     max_offset = int(image.height**0.5)
 
-    return _apply_func_distorsion(
+    return _apply_func_distortion(
         image,
         mask,
         vertical,
@@ -128,7 +128,7 @@ def cos(
 
     max_offset = int(image.height**0.5)
 
-    return _apply_func_distorsion(
+    return _apply_func_distortion(
         image,
         mask,
         vertical,
@@ -147,7 +147,7 @@ def random(
 
     max_offset = int(image.height**0.2)
 
-    return _apply_func_distorsion(
+    return _apply_func_distortion(
         image,
         mask,
         vertical,
