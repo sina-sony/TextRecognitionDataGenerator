@@ -111,9 +111,9 @@ def parse_arguments():
         "-f",
         "--format",
         type=int,
-        nargs="?",
-        help="Define the height of the produced images if horizontal, else the width",
-        default=32,
+        nargs="+",
+        help="Define the height of the produced images if horizontal, else the width. If two values are set, the first will indicate minimum height/width, the second maximum height/width, and the generator will choose a random value in between",
+        default=[32, 32],
     )
     parser.add_argument(
         "-t",
@@ -358,6 +358,12 @@ def main():
     elif len(character_spacing) > 2:
         sys.exit("Character spacing must be a single value or two values")
 
+    img_format = args.format
+    if len(img_format) == 1:
+        img_format = img_format * 2
+    elif len(img_format) > 2:
+        sys.exit("Image format must be a single value or two values")
+
     # Create the directory if it does not exist.
     try:
         os.makedirs(args.output_dir)
@@ -449,7 +455,10 @@ def main():
                 strings,
                 [fonts[rnd.randrange(0, len(fonts))] for _ in range(0, string_count)],
                 [args.output_dir] * string_count,
-                [args.format] * string_count,
+                [
+                    rnd.randrange(img_format[0], img_format[1] + 1)
+                    for _ in range(string_count)
+                ],
                 [args.extension] * string_count,
                 [args.skew_angle] * string_count,
                 [args.random_skew] * string_count,
