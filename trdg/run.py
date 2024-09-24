@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import random as rnd
 import string
+import numpy as np
 import sys
 from multiprocessing import Pool
 
@@ -19,7 +20,7 @@ from trdg.string_generator import (
     create_strings_from_wikipedia,
     create_strings_randomly,
 )
-from trdg.utils import load_dict, load_fonts
+from trdg.utils import load_dict, load_fonts, is_text_supported_by_font
 
 
 def margins(margin):
@@ -446,6 +447,26 @@ def main():
 
     string_count = len(strings)
 
+    # randomly sample a valid font for each string
+    string_fonts = []
+    for i in tqdm(range(string_count), desc="sampling fonts"):
+        perm = np.random.permutation(len(fonts))
+        font_found = False
+        for i in perm:
+            font = fonts[i]
+            if is_text_supported_by_font(strings[i], font):
+                string_fonts.append(font)
+                font_found = True
+                break
+        if not font_found:
+            strings[i] = ""
+
+    # remove empty strings
+    strings = [s for s in strings if s]
+    string_count = len(strings)
+
+    assert string_count == len(string_fonts)
+
     p = Pool(args.thread_count)
     for _ in tqdm(
         p.imap_unordered(
@@ -453,7 +474,7 @@ def main():
             zip(
                 [i for i in range(0, string_count)],
                 strings,
-                [fonts[rnd.randrange(0, len(fonts))] for _ in range(0, string_count)],
+                string_fonts,
                 [args.output_dir] * string_count,
                 [
                     rnd.randrange(img_format[0], img_format[1] + 1)
@@ -486,7 +507,8 @@ def main():
                     rnd.randrange(character_spacing[0], character_spacing[1] + 1)
                     for _ in range(string_count)
                 ],
-                [args.margins] * string_count,
+                # [args.margins] * string_count,
+                [tuple(rnd.randrange(1, m+1) for m in args.margins) for _ in range(string_count)],
                 [args.fit] * string_count,
                 [args.output_mask] * string_count,
                 [args.word_split] * string_count,
