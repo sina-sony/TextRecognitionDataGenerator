@@ -6,9 +6,13 @@ import os
 import re
 import unicodedata
 from typing import List, Tuple
+from fontTools.ttLib import TTFont
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+
+
+font_charset_memo = {}
 
 
 def load_dict(path: str) -> List[str]:
@@ -147,3 +151,31 @@ def get_text_height(image_font: ImageFont, text: str) -> int:
     """
     left, top, right, bottom = image_font.getbbox(text)
     return bottom
+
+
+def is_text_supported_by_font(text, font_path):
+    # Check if the supported characters for the font are already memoized
+    if font_path in font_charset_memo:
+        supported_chars = font_charset_memo[font_path]
+    else:
+        # Load the font
+        font = TTFont(font_path)
+
+        # Get the cmap table that maps characters to glyphs
+        cmap = font['cmap']
+
+        # Extract all supported characters in the font (Unicode code points)
+        supported_chars = set()
+        for table in cmap.tables:
+            if table.isUnicode():
+                supported_chars.update(table.cmap.keys())
+        
+        # Save the supported characters in the memoization dictionary
+        font_charset_memo[font_path] = supported_chars
+
+    # Check if every character in the text is supported by the font
+    for char in text:
+        if ord(char) not in supported_chars:
+            return False  # Return False if a character is not supported
+
+    return True  # All characters are supported
