@@ -13,10 +13,18 @@ def gaussian_noise(height: int, width: int) -> Image:
     """
 
     # We create an all white image
-    image = np.ones((height, width)) * 255
+    image = np.ones((height, width, 3), dtype=np.uint8) * 255
 
     # We add gaussian noise
-    cv2.randn(image, 235, 10)
+    rnd_std = tuple(rnd.randint(1, 25) for _ in range(3))
+    cv2.randn(image, (235, 235, 235), rnd_std)
+
+    # solid background with random color
+    rnd_bg_color = tuple(rnd.randint(0, 256) for _ in range(3))
+    bg = np.ones((height, width, 3), dtype=np.uint8)
+    bg[:, :] = rnd_bg_color
+    rnd_factor = rnd.random() * 0.3
+    cv2.addWeighted(bg, rnd_factor, image, 1 - rnd_factor, 0, image)
 
     return Image.fromarray(image).convert("RGBA")
 
