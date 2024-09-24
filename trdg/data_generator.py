@@ -1,3 +1,4 @@
+import math
 import os
 import random as rnd
 
@@ -82,6 +83,8 @@ class FakeTextDataGenerator(object):
                 stroke_width,
                 stroke_fill,
             )
+        max_angle = int(2 * math.atan(min(image.size) / max(image.size)) * 180 / math.pi)
+        skewing_angle = max(-max_angle, min(max_angle, skewing_angle))
         random_angle = rnd.randint(0 - skewing_angle, skewing_angle)
 
         rotated_img = image.rotate(
@@ -119,6 +122,17 @@ class FakeTextDataGenerator(object):
                 vertical=(distortion_orientation == 0 or distortion_orientation == 2),
                 horizontal=(distortion_orientation == 1 or distortion_orientation == 2),
             )
+
+        #######################
+        # Apply gaussian blur #
+        #######################
+
+        gaussian_filter = ImageFilter.GaussianBlur(
+            radius=blur if not random_blur else rnd.random() * blur
+        )
+
+        distorted_img = distorted_img.filter(gaussian_filter)
+        distorted_mask = distorted_mask.filter(gaussian_filter)
 
         ##################################
         # Resize image to desired format #
@@ -198,6 +212,12 @@ class FakeTextDataGenerator(object):
         except Exception as err:
             return
 
+        gaussian_filter = ImageFilter.GaussianBlur(
+            radius=blur if not random_blur else rnd.random() * blur / 2
+        )
+        background_img = background_img.filter(gaussian_filter)
+        background_mask = background_mask.filter(gaussian_filter)
+
         #############################
         # Place text with alignment #
         #############################
@@ -232,18 +252,8 @@ class FakeTextDataGenerator(object):
         # Change image mode (RGB, grayscale, etc.) #
         ############################################
 
-        background_img = background_img.convert(image_mode)
-        background_mask = background_mask.convert(image_mode)
-
-        #######################
-        # Apply gaussian blur #
-        #######################
-
-        gaussian_filter = ImageFilter.GaussianBlur(
-            radius=blur if not random_blur else rnd.random() * blur
-        )
-        final_image = background_img.filter(gaussian_filter)
-        final_mask = background_mask.filter(gaussian_filter)
+        final_image = background_img.convert(image_mode)
+        final_mask = background_mask.convert(image_mode)
 
         #####################################
         # Generate name for resulting image #
