@@ -531,10 +531,13 @@ def main():
         ) as f:
             for i in range(string_count):
                 file_name = str(i) + "." + args.extension
-                label = strings[i]
-                if args.space_width == 0:
-                    label = label.replace(" ", "")
-                f.write("{} {}\n".format(file_name, label))
+                # check if the file exists
+                file_path = os.path.join(args.output_dir, file_name)
+                if os.path.isfile(file_path):
+                    label = strings[i]
+                    if args.space_width == 0:
+                        label = label.replace(" ", "")
+                    f.write("{} {}\n".format(file_name, label))
 
 
 if __name__ == "__main__":
