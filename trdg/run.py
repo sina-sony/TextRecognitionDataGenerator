@@ -263,9 +263,9 @@ def parse_arguments():
         "-sw",
         "--space_width",
         type=float,
-        nargs="?",
-        help="Define the width of the spaces between words. 2.0 means twice the normal space width",
-        default=1.0,
+        nargs="+",
+        help="Define the width of the spaces between words. 2.0 means twice the normal space width. If two values are set, the first will indicate minimum spacing, the second maximum spacing, and the generator will choose a random value in between",
+        default=[1.0, 1.0],
     )
     parser.add_argument(
         "-cs",
@@ -359,6 +359,12 @@ def main():
 
     # Argument parsing
     args = parse_arguments()
+
+    space_width = args.space_width
+    if len(space_width) == 1:
+        space_width = space_width * 2
+    elif len(space_width) > 2:
+        sys.exit("Space width must be a single value or two values")
 
     character_spacing = args.character_spacing
     if len(character_spacing) == 1:
@@ -475,6 +481,11 @@ def main():
 
     assert string_count == len(string_fonts)
 
+    string_space_width = [
+        rnd.random() * (space_width[1] - space_width[0]) + space_width[0]
+        for _ in range(string_count)
+    ]
+
     p = Pool(args.thread_count)
     for _ in tqdm(
         p.imap_unordered(
@@ -510,7 +521,7 @@ def main():
                     if args.orientation == 2
                     else [args.orientation] * string_count
                 ),
-                [args.space_width] * string_count,
+                string_space_width,
                 [
                     rnd.randrange(character_spacing[0], character_spacing[1] + 1)
                     for _ in range(string_count)
@@ -543,7 +554,7 @@ def main():
                 file_path = os.path.join(args.output_dir, file_name)
                 if os.path.isfile(file_path):
                     label = strings[i]
-                    if args.space_width == 0:
+                    if string_space_width[i] == 0:
                         label = label.replace(" ", "")
                     f.write("{} {}\n".format(file_name, label))
 
