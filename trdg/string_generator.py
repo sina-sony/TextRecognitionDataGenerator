@@ -149,9 +149,13 @@ def create_strings_randomly(
                 current_string += "".join([rnd.choice(pool) for _ in range(seq_len)])
                 current_string += " "
             else:
-                include_word = rnd.choice([True, False])
+                WORD_ONLY = 0
+                NUMSYM_ONLY = 1
+                MIXED = 2
+                mode = rnd.choice([WORD_ONLY, NUMSYM_ONLY, MIXED])
+                include_word = mode != NUMSYM_ONLY
                 word = rnd.choice(lang_dict) if include_word else ""
-                include_numsym = not include_word or rnd.choice([True, False])
+                include_numsym = mode != WORD_ONLY
                 if include_numsym:
                     num_len = rnd.randint(min_num_chars, max_num_chars)
                     sym_len = rnd.randint(min_sym_chars, max_sym_chars)
