@@ -452,8 +452,8 @@ def main():
     for i in tqdm(range(string_count), desc="sampling fonts"):
         perm = np.random.permutation(len(fonts))
         font_found = False
-        for i in perm:
-            font = fonts[i]
+        for j in perm:
+            font = fonts[j]
             if is_text_supported_by_font(strings[i], font):
                 string_fonts.append(font)
                 font_found = True
