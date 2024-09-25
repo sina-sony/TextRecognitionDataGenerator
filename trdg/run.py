@@ -94,6 +94,13 @@ def parse_arguments():
         default=False,
     )
     parser.add_argument(
+        "-ud",
+        "--use_dict",
+        action="store_true",
+        help="Define if random sequences should contain words from a dictionary. Only works with -rs",
+        default=False,
+    )
+    parser.add_argument(
         "-w",
         "--length",
         type=int,
@@ -416,6 +423,7 @@ def main():
             args.include_numbers,
             args.include_symbols,
             args.language,
+            lang_dict if args.use_dict else None,
         )
         # Set a name format compatible with special characters automatically if they are used
         if args.include_symbols or True not in (
