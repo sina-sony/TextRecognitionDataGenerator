@@ -1,6 +1,6 @@
 import random as rnd
 import string
-from typing import List
+from typing import List, Optional
 
 import wikipedia
 
@@ -80,6 +80,7 @@ def create_strings_randomly(
     num: bool,
     sym: bool,
     lang: str,
+    lang_dict: Optional[list[str]] = None,
 ) -> List[str]:
     """
     Create all strings by randomly sampling from a pool of characters.
@@ -115,9 +116,11 @@ def create_strings_randomly(
         else:
             pool += string.ascii_letters
     if num:
-        pool += "0123456789"
+        num_pool = "0123456789"
+        pool += num_pool
     if sym:
-        pool += "!\"#$%&'()*+,-./:;?@[\\]^_`{|}~"
+        sym_pool = "!\"#$%&'()*+,-./:;?@[\\]^_`{|}~"
+        pool += sym_pool
 
     if lang == "cn":
         min_seq_len = 1
@@ -129,12 +132,45 @@ def create_strings_randomly(
         min_seq_len = 2
         max_seq_len = 10
 
+    if lang_dict is not None:
+        min_num_chars = 1
+        max_num_chars = 16
+        min_sym_chars = 0
+        max_sym_chars = 2
+        
+    max_string_len = 26
     strings = []
-    for _ in range(0, count):
+    i = 0
+    while i < count:
         current_string = ""
         for _ in range(0, rnd.randint(1, length) if allow_variable else length):
-            seq_len = rnd.randint(min_seq_len, max_seq_len)
-            current_string += "".join([rnd.choice(pool) for _ in range(seq_len)])
+            if lang_dict is None:
+                seq_len = rnd.randint(min_seq_len, max_seq_len)
+                current_string += "".join([rnd.choice(pool) for _ in range(seq_len)])
+                current_string += " "
+            else:
+                include_word = rnd.choice([True, False])
+                word = rnd.choice(lang_dict) if include_word else ""
+                include_numsym = not include_word or rnd.choice([True, False])
+                if include_numsym:
+                    num_len = rnd.randint(min_num_chars, max_num_chars)
+                    sym_len = rnd.randint(min_sym_chars, max_sym_chars)
+                    num_list = [rnd.choice(num_pool) for _ in range(num_len)]
+                    sym_list = [rnd.choice(sym_pool) for _ in range(sym_len)]
+                    num_sym_list= num_list + sym_list
+                    rnd.shuffle(num_sym_list)
+                    num_sym = "".join(num_sym_list)
+                else:
+                    num_sym = ""
+                word_num_sym = [word, num_sym]
+                rnd.shuffle(word_num_sym)
+                current_string += "".join(word_num_sym)
+            
             current_string += " "
-        strings.append(current_string[:-1])
+        
+        current_string = current_string.strip()
+        if 0 < len(current_string) <= max_string_len:
+            strings.append(current_string)
+            i += 1
+    
     return strings
